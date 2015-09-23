@@ -1,0 +1,45 @@
+#!/bin/bash
+if [ -z "$1" ]; then
+echo "Where the name of the certificate?";
+exit 1;
+fi
+
+dirOvpn2="/usr/src/easy-rsa/easy-rsa/2.0";
+ipAddr="144.76.157.35";
+port="443";
+
+cd $dirOvpn2/;
+source $dirOvpn2/vars;
+$dirOvpn2/build-key $1;
+
+mkdir $dirOvpn2/keys/$1;
+
+cp $dirOvpn2/keys/$1.crt $dirOvpn2/2.0/keys/$1/
+cp $dirOvpn2/keys/$1.csr $dirOvpn2/keys/$1/
+cp $dirOvpn2/keys/$1.key $dirOvpn2/keys/$1/
+cp $dirOvpn2/keys/ca.crt $dirOvpn2/keys/$1/
+cp $dirOvpn2/keys/ca.key $dirOvpn2/keys/$1/
+
+echo "
+client
+dev tun0
+proto tcp
+remote $ipaddr $port
+#resolv-retry infinite
+nobind
+#user nobody
+#group nobody
+persist-key
+persist-tun
+ca ca.crt
+cert $1.crt
+key $1.key
+comp-lzo
+verb 3
+mute 3
+">$dirOvpn2/keys/$1/config.ovpn;
+
+cd $dirOvpn2/keys/;
+zip -r -9 $1.zip ./$1/;
+rm -rf $dirOvpn2/keys/$1/;
+#mv $dirOvpn2/keys/$1.zip /srv/www/htdocs/download/vpn_client/client/;
