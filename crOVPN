@@ -5,8 +5,8 @@ exit 1;
 fi
 
 dirOvpn2="/usr/src/easy-rsa/easy-rsa/2.0";
-ipAddr="144.76.157.35";
-port="443";
+ipAddr="your ip-address";
+port="your port";
 
 cd $dirOvpn2/;
 source $dirOvpn2/vars;
